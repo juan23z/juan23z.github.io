@@ -19,6 +19,13 @@
   .box{background:#f8fafc;border:1px solid var(--bd);border-radius:8px;padding:14px 18px}
   footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--bd);color:var(--mut);font-size:13px}
   a{color:var(--ac)}
+  @media print {
+    body{max-width:none;padding:0;font-size:12px}
+    h2{margin-top:22px}
+    .finding,.box,.disclaimer,.note,.clean{break-inside:avoid}
+    pre.loc{white-space:pre-wrap;word-break:break-word}
+    a{color:#1e293b;text-decoration:none}
+  }
 </style></head><body>
 <h1>Revisión de seguridad — Protocolo X (fork de Compound v2)</h1>
 <div class="subtitle">Preparado por <b>Nawel</b> · revisión asistida por IA (OpenClaw) · julio 2026</div>
