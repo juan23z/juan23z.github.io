@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pre-deploy smart-contract security checklist — by Nawel</title>
+<meta name="description" content="A practical pre-deploy security checklist for Solidity protocols — vaults, access control, oracles, reentrancy, upgrades and testing.">
+<style>
+  :root{--tx:#1e293b;--mut:#64748b;--bd:#e2e8f0;--ac:#4f46e5;--ok:#16a34a}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--tx);line-height:1.6;max-width:820px;margin:0 auto;padding:40px 24px;background:#fff}
+  h1{font-size:30px;margin:0 0 6px} h2{font-size:20px;margin:30px 0 10px;border-bottom:2px solid var(--bd);padding-bottom:6px}
+  .sub{color:var(--mut);font-size:15px;margin-bottom:8px}
+  ul{list-style:none;padding:0} li{padding:7px 0 7px 30px;position:relative;font-size:15px;border-bottom:1px solid #f1f5f9}
+  li:before{content:"☐";position:absolute;left:0;top:6px;color:var(--ac);font-size:16px}
+  li b{color:var(--tx)} li span{color:var(--mut)}
+  .cta{background:linear-gradient(90deg,#0f1e3a,#1a1030);color:#e2e8f0;border-radius:14px;padding:26px;margin:34px 0;text-align:center}
+  .cta a{display:inline-block;background:#a5b4fc;color:#0b0f1a;padding:11px 22px;border-radius:9px;font-weight:700;text-decoration:none;margin-top:8px}
+  .cta a.ghost{background:transparent;border:1px solid #3b3b6e;color:#e2e8f0}
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--bd);color:var(--mut);font-size:13px}
+  a{color:var(--ac)}
+  @media print{.cta{background:#f8fafc;color:var(--tx)} a{color:var(--tx)}}
+</style>
+</head>
+<body>
+<h1>🛡️ Pre-deploy security checklist</h1>
+<div class="sub">A practical checklist for Solidity protocols before mainnet. Free — from the questions I ask on every review.</div>
+<div class="sub" style="font-size:13px">By <a href="https://juan23z.github.io">Nawel</a> · print it, share it, tick it off.</div>
+
+<h2>Vaults & share accounting (ERC-4626)</h2>
+<ul>
+<li><b>First-depositor inflation</b> <span>— virtual shares/offset or a minimum initial deposit is in place.</span></li>
+<li><b>Rounding direction</b> <span>— deposit/mint & convertToShares round DOWN; previewMint/previewWithdraw round UP (in the vault's favor).</span></li>
+<li><b>totalAssets not manipulable</b> <span>— not derived from a spot balance an attacker can donate to.</span></li>
+<li><b>Fee accounting</b> <span>— <code>lastTotalAssets</code> updated on every op that touches fees.</span></li>
+</ul>
+
+<h2>Access control</h2>
+<ul>
+<li><b>Every privileged function is gated</b> <span>— mint, pause, upgrade, setters behind a role/owner.</span></li>
+<li><b>Ownership is two-step</b> <span>— no lock-out from a typo'd transfer (Ownable2Step).</span></li>
+<li><b>initialize() protected</b> <span>— <code>initializer</code> modifier + deployed atomically (no front-run).</span></li>
+<li><b>Admin behind multisig/timelock</b> <span>— not a single hot EOA.</span></li>
+</ul>
+
+<h2>Oracles</h2>
+<ul>
+<li><b>Staleness checked</b> <span>— <code>updatedAt</code> vs a max-age; revert on stale.</span></li>
+<li><b>Round validity</b> <span>— <code>answeredInRound &gt;= roundId</code>, price &gt; 0.</span></li>
+<li><b>Manipulation-resistant</b> <span>— TWAP/redundant sources, not raw spot.</span></li>
+</ul>
+
+<h2>Reentrancy & external calls</h2>
+<ul>
+<li><b>Checks-Effects-Interactions</b> <span>— state updated before external calls.</span></li>
+<li><b>Reentrancy guards</b> <span>— on functions moving funds or calling out; read-only reentrancy considered.</span></li>
+<li><b>Hooks use call, not delegatecall</b> <span>— return values checked; extensions isolated.</span></li>
+</ul>
+
+<h2>Tokens & math</h2>
+<ul>
+<li><b>Fee-on-transfer / rebasing</b> <span>— accounting uses balance-diff, not the input amount.</span></li>
+<li><b>Precision</b> <span>— multiply before divide; no silent truncation on core paths.</span></li>
+<li><b>SafeERC20</b> <span>— for non-standard tokens (missing bool return, USDT-style).</span></li>
+</ul>
+
+<h2>Upgrades & testing</h2>
+<ul>
+<li><b>Storage layout safe</b> <span>— no collisions across upgrades; gap variables if needed.</span></li>
+<li><b>Upgrade gated</b> <span>— behind governance/timelock; <code>_authorizeUpgrade</code> restricted.</span></li>
+<li><b>Invariant/fuzz tests</b> <span>— on the economic invariants (solvency, conservation of funds).</span></li>
+<li><b>Continuous review</b> <span>— re-audited on every change/deploy, not just once (your code keeps changing).</span></li>
+</ul>
+
+<div class="cta">
+  <div style="font-size:19px;font-weight:800;margin-bottom:6px">Want this checked for real — on every change?</div>
+  <div style="color:#94a3b8;font-size:14px">Fast, affordable security review + continuous monitoring for small protocols.</div>
+  <a href="https://juan23z.github.io">See the service →</a>
+  <a class="ghost" href="https://github.com/juan23z/openclaw-audit">Free scanner + GitHub Action</a>
+</div>
+
+<footer>© 2026 Nawel · <a href="https://juan23z.github.io">juan23z.github.io</a> · a one-time audit is a snapshot; your risk surface moves — so should your review.</footer>
+</body>
+</html>
