@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Security Review — Protocol X (Compound v2 fork)</title>
+<style>
+  :root{--tx:#1e293b;--mut:#64748b;--bd:#e2e8f0;--ac:#4f46e5}
+  *{box-sizing:border-box} body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--tx);line-height:1.6;max-width:820px;margin:0 auto;padding:40px 24px;background:#fff}
+  h1{font-size:30px;margin:0 0 4px} h2{font-size:21px;margin:34px 0 12px;border-bottom:2px solid var(--bd);padding-bottom:6px}
+  h3{font-size:16px;margin:18px 0 6px} .subtitle{color:var(--mut);font-size:14px;margin-bottom:20px}
+  .chip{color:#fff;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-right:6px;display:inline-block}
+  .sev{color:#fff;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;margin-right:6px}
+  .cand{color:#d97706;font-size:12px;font-weight:700;margin-left:6px}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0} td,th{border:1px solid var(--bd);padding:7px 10px;text-align:left}
+  .finding{border:1px solid var(--bd);border-radius:8px;padding:14px 18px;margin:12px 0;background:#fafbfc}
+  .finding p{margin:6px 0;font-size:14px} pre.loc{background:#0f172a;color:#e2e8f0;padding:10px;border-radius:6px;
+    overflow:auto;font-size:12px} .clean{background:#f0fdf4;border:1px solid #bbf7d0;padding:14px;border-radius:8px;color:#166534}
+  .note{background:#fffbeb;border:1px solid #fde68a;padding:12px;border-radius:8px;font-size:14px;color:#92400e}
+  .disclaimer{background:#f8fafc;border:1px solid var(--bd);padding:14px;border-radius:8px;font-size:13px;color:var(--mut)}
+  .box{background:#f8fafc;border:1px solid var(--bd);border-radius:8px;padding:14px 18px}
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--bd);color:var(--mut);font-size:13px}
+  a{color:var(--ac)}
+  @media print {
+    body{max-width:none;padding:0;font-size:12px}
+    h2{margin-top:22px}
+    .finding,.box,.disclaimer,.note,.clean{break-inside:avoid}
+    pre.loc{white-space:pre-wrap;word-break:break-word}
+    a{color:#1e293b;text-decoration:none}
+  }
+</style></head><body>
+<h1>Security Review — Protocol X (Compound v2 fork)</h1>
+<div class="subtitle">Prepared by <b>Nawel</b> · AI-assisted review (OpenClaw) · July 2026</div>
+<div class="disclaimer"><b>Disclaimer:</b> best-effort analysis of the in-scope code; it does not guarantee the
+absence of vulnerabilities nor replace continuous security. <i>Candidate</i> findings require further
+verification before they can be considered confirmed.</div>
+<h2>Executive summary</h2>
+<div class="box">
+  <p><b>Protocol:</b> Protocol X (Compound v2 fork)</p>
+  <p><b>Scope:</b> protocol contracts repository</p>
+  <p><b>Confirmed findings:</b> 0 &nbsp; <span class="chip" style="background:#16a34a">No critical/high findings</span></p>
+</div>
+<h2>Methodology</h2>
+<ol>
+  <li><b>Automated analysis</b> — in-house engine (OpenClaw): static detectors + LLM-assisted analysis.</li>
+  <li><b>Triage</b> — false-positive filtering and prioritization by severity/impact.</li>
+  <li><b>Manual verification</b> — every confirmed finding is reproduced before it is reported.</li>
+  <li><b>Recommendations</b> — concrete mitigation per finding.</li>
+</ol>
+<h2>Severity classification</h2>
+<table><tr><th>Severity</th><th>Definition</th></tr><tr><td><b>Critical</b></td><td>Funds directly at risk or guaranteed loss; exploitable with severe impact.</td></tr><tr><td><b>High</b></td><td>Loss of funds or invariant breakage under realistic conditions.</td></tr><tr><td><b>Medium</b></td><td>Bounded impact or requiring specific conditions; moderate risk.</td></tr><tr><td><b>Low</b></td><td>Minor impact, hard to exploit or with existing mitigations.</td></tr><tr><td><b>Info</b></td><td>Best practices, code quality, gas, readability. No direct risk.</td></tr></table>
+<h2>Confirmed findings</h2>
+<p class="clean">No exploitable vulnerabilities were confirmed within the reviewed scope. The reviewed code generally follows sound security practices.</p>
+
+<h2>Automated analysis coverage</h2>
+<p>The in-scope code was reviewed against the following vulnerability classes:</p>
+<ul><li>✓ First-depositor inflation (ERC-4626 vaults)</li><li>✓ Rounding / precision loss in asset↔share conversions</li><li>✓ <code>totalAssets</code> manipulation / donations to the contract</li><li>✓ Price-oracle staleness and manipulation</li><li>✓ Cross-function and read-only reentrancy</li><li>✓ Access control and unprotected privileged functions</li><li>✓ Fee-on-transfer / rebasing token handling</li><li>✓ Standards compliance (ERC-20/4626)</li><li>✓ Fee accounting (fees as shares)</li><li>✓ Documentation / NatSpec of critical functions</li></ul>
+<h2>General security recommendations</h2>
+<ul><li><b>Access control:</b> Ensure every privileged function (mint, pauses, upgrades, parameter changes) is protected and, ideally, behind a multisig/timelock.</li><li><b>Invariant testing:</b> Add property tests (fuzzing/invariant testing with Foundry) over the key economic invariants (fund conservation, solvency, exchange rate).</li><li><b>Oracles:</b> If external prices are consumed, validate staleness and deviation bounds; consider redundant sources.</li><li><b>Reentrancy and checks-effects-interactions:</b> Confirm reentrancy guards on every function that moves funds or calls external contracts.</li><li><b>Upgrade safety:</b> If the system is upgradeable, review storage collisions and protect the upgrade process behind governance/timelock.</li><li><b>Continuous monitoring:</b> Code changes over time: we recommend an automatic review on every deploy/upgrade (our continuous-monitoring service covers exactly this).</li></ul>
+<footer>Review by <b>Nawel</b> with <b>OpenClaw</b> — autonomous security-analysis system (200+ modules,
+running 24/7 in production). Fast, affordable reviews for small protocols.<br>
+Contact: <a href="mailto:naweljuan@gmail.com">naweljuan@gmail.com</a> · <a href="https://juan23z.github.io">juan23z.github.io</a>
+</footer></body></html>
