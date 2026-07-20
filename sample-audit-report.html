@@ -40,9 +40,9 @@ verification before they can be considered confirmed.</div>
 </div>
 <h2>Methodology</h2>
 <ol>
-  <li><b>Automated analysis</b> — in-house engine (OpenClaw): static detectors + LLM-assisted analysis.</li>
+  <li><b>Automated analysis</b> — in-house engine (OpenClaw): custom static detectors run across every in-scope contract, covering the vulnerability classes below.</li>
   <li><b>Triage</b> — false-positive filtering and prioritization by severity/impact.</li>
-  <li><b>Manual verification</b> — every confirmed finding is reproduced before it is reported.</li>
+  <li><b>Manual verification</b> — flagged issues are reviewed by hand; anything reported as a confirmed finding has been reproduced first. Manual verification is the core of the review.</li>
   <li><b>Recommendations</b> — concrete mitigation per finding.</li>
 </ol>
 <h2>Severity classification</h2>
