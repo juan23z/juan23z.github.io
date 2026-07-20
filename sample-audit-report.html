@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Security Review — Protocol X (Compound v2 fork)</title>
+<title>Security Review — Protocol X — illustrative sample</title>
 <style>
   :root{--tx:#1e293b;--mut:#64748b;--bd:#e2e8f0;--ac:#4f46e5}
   *{box-sizing:border-box} body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
@@ -27,16 +27,18 @@
     a{color:#1e293b;text-decoration:none}
   }
 </style></head><body>
-<h1>Security Review — Protocol X (Compound v2 fork)</h1>
-<div class="subtitle">Prepared by <b>Nawel</b> · AI-assisted review (OpenClaw) · July 2026</div>
+<h1>Security Review — Protocol X — illustrative sample</h1>
+<div class="subtitle">Prepared by <b>Nawel</b> · AI-assisted review (OpenClaw) · 2026-07-20</div>
+<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin:10px 0 4px;color:#1e3a8a;font-size:14px"><b>📄 Illustrative sample.</b> This report shows the exact format and depth you receive. The protocol and findings are representative examples chosen to demonstrate how issues are presented — not a real engagement. Real reports follow this same structure on your code.</div>
 <div class="disclaimer"><b>Disclaimer:</b> best-effort analysis of the in-scope code; it does not guarantee the
 absence of vulnerabilities nor replace continuous security. <i>Candidate</i> findings require further
 verification before they can be considered confirmed.</div>
 <h2>Executive summary</h2>
 <div class="box">
-  <p><b>Protocol:</b> Protocol X (Compound v2 fork)</p>
-  <p><b>Scope:</b> protocol contracts repository</p>
-  <p><b>Confirmed findings:</b> 0 &nbsp; <span class="chip" style="background:#16a34a">No critical/high findings</span></p>
+  <p><b>Protocol:</b> Protocol X — illustrative sample</p>
+  <p><b>Scope:</b> 9 client .sol contracts in scope (ERC-4626 vault + lending market)</p>
+  <p><b>Confirmed findings:</b> 3 &nbsp; <span class="chip" style="background:#dc2626">High 1</span><span class="chip" style="background:#d97706">Medium 1</span><span class="chip" style="background:#2563eb">Low 1</span></p>
+  <p><b>Candidate observations:</b> 1 — heuristic flags detailed in the appendix for your team to review (not yet manually confirmed).</p>
 </div>
 <h2>Methodology</h2>
 <ol>
@@ -48,11 +50,20 @@ verification before they can be considered confirmed.</div>
 <h2>Severity classification</h2>
 <table><tr><th>Severity</th><th>Definition</th></tr><tr><td><b>Critical</b></td><td>Funds directly at risk or guaranteed loss; exploitable with severe impact.</td></tr><tr><td><b>High</b></td><td>Loss of funds or invariant breakage under realistic conditions.</td></tr><tr><td><b>Medium</b></td><td>Bounded impact or requiring specific conditions; moderate risk.</td></tr><tr><td><b>Low</b></td><td>Minor impact, hard to exploit or with existing mitigations.</td></tr><tr><td><b>Info</b></td><td>Best practices, code quality, gas, readability. No direct risk.</td></tr></table>
 <h2>Confirmed findings</h2>
-<p class="clean">No exploitable vulnerabilities were confirmed within the reviewed scope. The reviewed code generally follows sound security practices.</p>
-
+<div class="finding"><h3><span class="sev" style="background:#dc2626">HIGH</span> 1. Unprotected price-oracle setter enables full price manipulation </h3><p><b>Description:</b> `setPriceOracle(address)` is declared `external` with no access-control modifier and no inline caller check. Any account can repoint the vault&#x27;s price feed to an attacker-controlled contract.</p><p><b>Impact:</b> An attacker sets a malicious oracle, inflates the reported collateral price, borrows against near-worthless collateral, and drains the lending pool. Direct, unbounded loss of funds.</p><p><b>Recommendation:</b> Gate `setPriceOracle` behind `onlyRole(ORACLE_ADMIN)` (ideally a multisig + timelock) and emit an `OracleUpdated` event. Consider a two-step change with a delay so integrators can react.</p><pre class="loc">contracts/Vault.sol:214
+  213:     /// @notice Update the price oracle
+  214:     function setPriceOracle(address newOracle) external {
+  215:         oracle = IPriceOracle(newOracle);   // &lt;-- no access control
+  216:     }</pre></div><div class="finding"><h3><span class="sev" style="background:#d97706">MEDIUM</span> 2. Read-only reentrancy in pricePerShare() exposes a manipulable value to integrators </h3><p><b>Description:</b> `pricePerShare()` derives its value from `totalAssets()`, which reads the raw token balance held by the vault. During `withdraw()`, the ETH/token transfer to the caller happens BEFORE `totalSupply` and internal balances are finalized, so a reentrant call observes an inflated per-share value. This is the Curve/Balancer read-only-reentrancy class.</p><p><b>Impact:</b> A third-party protocol that consumes `pricePerShare()` as an oracle (e.g. for collateral valuation) can be fed a manipulated price during a reentrant call, enabling under-collateralized borrowing on the integrating protocol. In-scope funds are not directly lost, but integrators relying on this view are.</p><p><b>Attack path:</b> 1) Attacker deposits. 2) Calls withdraw(); the transfer triggers the attacker&#x27;s fallback before balances update. 3) In the fallback, the attacker calls an integrating protocol that reads pricePerShare() -&gt; inflated -&gt; borrows against it.</p><p><b>Recommendation:</b> Add a reentrancy read-guard to the view (revert if the nonReentrant lock is held, as Curve now does), or move all external transfers to the end of withdraw() so state is finalized first (checks-effects-interactions).</p><pre class="loc">contracts/Vault.sol:181
+  180:     function pricePerShare() public view returns (uint256) {
+  181:         return totalAssets() * 1e18 / totalSupply();   // totalAssets() reads raw balance
+  182:     }</pre></div><div class="finding"><h3><span class="sev" style="background:#2563eb">LOW</span> 3. previewRedeem() rounds in the redeemer&#x27;s favor (EIP-4626 direction) </h3><p><b>Description:</b> `previewRedeem()` computes assets with a round-UP helper (`mulDivUp`). EIP-4626 requires that redeem/withdraw round DOWN in the vault&#x27;s favor. Rounding up lets a redeemer extract up to 1 wei more than entitled per call.</p><p><b>Impact:</b> Economically negligible per call, but repeatable; over many calls it erodes the share price against the remaining holders. This is a correctness / standards-compliance issue rather than a fund-draining bug.</p><p><b>Recommendation:</b> Use a round-DOWN multiply-divide (`mulDiv`) in `previewRedeem`/`convertToAssets`. Reserve round-up for `previewMint`/`previewWithdraw`, per the EIP-4626 rounding table.</p><pre class="loc">contracts/Vault.sol:167
+  167:     return shares.mulDivUp(totalAssets(), totalSupply());   // should round DOWN on redeem</pre></div>
+<h2>Appendix — Candidate observations</h2><div class="note">Flagged by the automated analysis, <b>not yet manually confirmed</b>. Do not treat as confirmed vulnerabilities until verified.</div><div class="finding"><h3><span class="sev" style="background:#dc2626">HIGH</span> 1. Chainlink latestRoundData() consumed without a staleness check <span class="cand">candidate · pending verification</span></h3><p><b>Description:</b> `OracleAdapter.getPrice()` reads `latestRoundData()` and uses `answer` directly, without validating `updatedAt` (heartbeat) or `answer &gt; 0`. Flagged automatically; requires confirming whether a staleness guard exists in the calling path before this is treated as confirmed.</p><p><b>Impact:</b> If unguarded, a stale or zero price could be consumed on L2 sequencer downtime, enabling mispriced borrows/liquidations.</p><p><b>Recommendation:</b> Verify a heartbeat check; if absent, require `block.timestamp - updatedAt &lt;= maxDelay` and `answer &gt; 0`.</p><pre class="loc">contracts/OracleAdapter.sol:44
+  44:     (, int256 answer,,,) = feed.latestRoundData();   // no updatedAt / answer&gt;0 check seen</pre></div>
 <h2>Automated analysis coverage</h2>
 <p>The in-scope code was reviewed against the following vulnerability classes:</p>
-<ul><li>✓ First-depositor inflation (ERC-4626 vaults)</li><li>✓ Rounding / precision loss in asset↔share conversions</li><li>✓ <code>totalAssets</code> manipulation / donation attacks</li><li>✓ Price-oracle staleness and manipulation</li><li>✓ Cross-function and read-only reentrancy</li><li>✓ Access control and unprotected privileged functions</li><li>✓ Fee-on-transfer / rebasing token handling</li><li>✓ Unchecked low-level calls (<code>call</code>/<code>send</code>/<code>delegatecall</code> return ignored)</li><li>✓ <code>tx.origin</code> used for authorization (phishing vector)</li><li>✓ Standards compliance (ERC-20 / ERC-4626)</li><li>✓ Documentation / NatSpec of critical functions</li></ul>
+<ul><li>✓ First-depositor inflation (ERC-4626 vaults)</li><li>✓ Rounding / precision loss in asset↔share conversions</li><li>✓ `totalAssets` manipulation / donation attacks</li><li>✓ Price-oracle staleness and manipulation</li><li>✓ Cross-function and read-only reentrancy</li><li>✓ Access control and unprotected privileged functions</li><li>✓ Fee-on-transfer / rebasing token handling</li><li>✓ Unchecked low-level calls (`call`/`send`/`delegatecall` return ignored)</li><li>✓ `tx.origin` used for authorization (phishing vector)</li><li>✓ Standards compliance (ERC-20 / ERC-4626)</li><li>✓ Documentation / NatSpec of critical functions</li></ul>
 <h2>General security recommendations</h2>
 <ul><li><b>Access control:</b> Ensure every privileged function (mint, pauses, upgrades, parameter changes) is protected and, ideally, behind a multisig/timelock.</li><li><b>Invariant testing:</b> Add property tests (fuzzing/invariant testing with Foundry) over the key economic invariants (fund conservation, solvency, exchange rate).</li><li><b>Oracles:</b> If external prices are consumed, validate staleness and deviation bounds; consider redundant sources.</li><li><b>Reentrancy and checks-effects-interactions:</b> Confirm reentrancy guards on every function that moves funds or calls external contracts.</li><li><b>Upgrade safety:</b> If the system is upgradeable, review storage collisions and protect the upgrade process behind governance/timelock.</li><li><b>Continuous monitoring:</b> Code changes over time: we recommend an automatic review on every deploy/upgrade (our continuous-monitoring service covers exactly this).</li></ul>
 <footer>Review by <b>Nawel</b> with <b>OpenClaw</b> — autonomous security-analysis system (200+ modules,
