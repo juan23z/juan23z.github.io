@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenClaw Audit — free Solidity security scans on every PR</title>
+<meta name="description" content="Free, MIT heuristic security scanner for Solidity. Calibrated to 0 false positives across the entire OpenZeppelin library — verify it yourself in one command. Runs as a GitHub Action.">
+<style>
+  :root{--bg:#0b0f1a;--card:#111827;--bd:#1f2937;--tx:#e2e8f0;--mut:#94a3b8;--ac:#a5b4fc;--gr:#4ade80;--code:#0f1626}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px}
+  a{color:var(--ac);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .hero{text-align:center;padding:64px 0 40px}
+  .hero h1{font-size:38px;line-height:1.15;margin:0 0 14px;font-weight:800;letter-spacing:-.5px}
+  .hero .sub{font-size:18px;color:var(--mut);max-width:620px;margin:0 auto 26px}
+  .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+  .badge{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--mut)}
+  .badge.green{color:var(--gr);border-color:#166534}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--ac);color:#0b0f1a;font-weight:700;
+       padding:12px 22px;border-radius:10px;font-size:15px}
+  .cta.ghost{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+  .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  section{padding:34px 0;border-top:1px solid var(--bd)}
+  h2{font-size:23px;font-weight:800;margin:0 0 8px}
+  .lead{color:var(--mut);margin:0 0 18px}
+  pre{background:var(--code);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;overflow-x:auto;
+      font-size:13.5px;color:#cbd5e1;margin:0 0 12px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .claim{background:linear-gradient(180deg,#0f1a14,#0b0f1a);border:1px solid #166534;border-radius:14px;padding:22px 24px}
+  .claim .big{font-size:30px;font-weight:800;color:var(--gr)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .det{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;font-size:14px}
+  .det b{color:var(--tx)}
+  .det span{color:var(--mut);font-size:12.5px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--bd)}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .muted{color:var(--mut);font-size:14px}
+  .foot{text-align:center;padding:40px 0;color:var(--mut);font-size:13px}
+  .pill{display:inline-block;background:#0f1a14;color:var(--gr);border:1px solid #166534;border-radius:6px;padding:2px 8px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="badges">
+      <span class="badge green">0 false positives on OpenZeppelin</span>
+      <span class="badge">MIT</span>
+      <span class="badge">no API keys</span>
+      <span class="badge">Python + git</span>
+    </div>
+    <h1>Free Solidity security scans<br>on every pull request</h1>
+    <p class="sub">OpenClaw Audit is a fast heuristic security scanner for Solidity. Point it at a repo — or add the
+      GitHub Action — and get a professional report in seconds. Calibrated to stay <b>silent on sound code</b>, so
+      you get signal, not a wall of false positives.</p>
+    <div class="ctas">
+      <a class="cta" href="https://github.com/juan23z/openclaw-audit">⭐ Get it on GitHub</a>
+      <a class="cta ghost" href="#try">Try it in one command ↓</a>
+    </div>
+  </div>
+
+  <section>
+    <div class="claim">
+      <div class="muted">The claim that sets it apart — and you can check it yourself:</div>
+      <div class="big">0 findings across all of OpenZeppelin</div>
+      <p class="muted" style="margin:6px 0 12px">247 source files, the most-audited codebase in web3 — zero noise.
+        Most scanners flag dozens of non-issues there. Don't take our word for it:</p>
+      <pre><code>pipx run --spec git+https://github.com/juan23z/openclaw-audit openclaw-audit \
+  https://github.com/OpenZeppelin/openzeppelin-contracts
+# → 0 candidate observations across 247 client .sol contracts</code></pre>
+      <p class="muted" style="margin:0">A claim you can <b>verify</b>, not one you have to trust.</p>
+    </div>
+  </section>
+
+  <section id="try">
+    <h2>⚡ Try it now</h2>
+    <p class="lead">No clone, no config — one command (needs <a href="https://pipx.pypa.io">pipx</a>):</p>
+    <pre><code>pipx run --spec git+https://github.com/juan23z/openclaw-audit openclaw-audit &lt;repo-or-path&gt; --out ./report
+# → ./report/report.md  +  ./report/report.html</code></pre>
+    <p class="lead">Or add it to CI and get a scan on every push &amp; PR — a summary lands as a comment on the PR:</p>
+    <pre><code># .github/workflows/security.yml
+name: security
+on: [push, pull_request]
+permissions: { contents: read, pull-requests: write }
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: juan23z/openclaw-audit@v1</code></pre>
+    <p class="muted">On the <a href="https://github.com/marketplace/actions/openclaw-audit">GitHub Marketplace</a>.
+      No API keys, no cost.</p>
+  </section>
+
+  <section>
+    <h2>✅ Calibrated, not noisy</h2>
+    <p class="lead">Run across 10 of the most-reviewed codebases in the ecosystem — every flag verified by hand.
+      <b>14 candidates across 608 source files; 4 codebases perfectly clean.</b></p>
+    <table>
+      <tr><th>Codebase</th><th class="n">Files</th><th class="n">Flags</th></tr>
+      <tr><td>OpenZeppelin Contracts</td><td class="n">247</td><td class="n"><span class="pill">0</span></td></tr>
+      <tr><td>forge-std · Permit2 · PRBMath</td><td class="n">87</td><td class="n"><span class="pill">0</span></td></tr>
+      <tr><td>Uniswap v2 / v3 / v4-core</td><td class="n">97</td><td class="n">3</td></tr>
+      <tr><td>Solmate · Morpho Blue</td><td class="n">37</td><td class="n">4</td></tr>
+      <tr><td>Solady</td><td class="n">140</td><td class="n">7</td></tr>
+    </table>
+    <p class="muted" style="margin-top:12px">Full breakdown — which flags are false positives (and why the heuristic
+      fired), which are real, known design gaps → <a href="https://github.com/juan23z/openclaw-audit/blob/main/CALIBRATION.md">the Calibration Report</a>.</p>
+  </section>
+
+  <section>
+    <h2>🔍 What it checks — 12 detectors</h2>
+    <div class="grid">
+      <div class="det"><b>Access control</b><br><span>unprotected privileged / init / sweep</span></div>
+      <div class="det"><b>Cross-function reentrancy</b><br><span>external call before state update</span></div>
+      <div class="det"><b>Oracle staleness</b><br><span>price reads without freshness checks</span></div>
+      <div class="det"><b>ERC-4626 rounding</b><br><span>rounding that favors the withdrawer</span></div>
+      <div class="det"><b>First-depositor inflation</b><br><span>empty-vault share inflation</span></div>
+      <div class="det"><b>Precision loss</b><br><span>division before multiplication</span></div>
+      <div class="det"><b>Unchecked low-level call</b><br><span>ignored call/send/delegatecall return</span></div>
+      <div class="det"><b>tx.origin auth</b><br><span>phishing vector</span></div>
+      <div class="det"><b>Donation attack</b><br><span>balanceOf(this) used for accounting</span></div>
+      <div class="det"><b>Fee-on-transfer</b><br><span>unhandled fee/rebasing assumptions</span></div>
+      <div class="det"><b>ERC compliance</b><br><span>ERC-20 / 4626 conformance</span></div>
+      <div class="det"><b>NatSpec</b><br><span>missing docs on critical functions</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>⚠️ Honest by design</h2>
+    <p class="lead">These are <b>heuristic candidates</b>, not confirmed vulnerabilities. Static heuristics produce
+      false positives — the report labels every item <i>"candidate · verify"</i>. The whole point of the calibration
+      above is that there aren't many, and each is explainable.</p>
+    <p class="muted">Want a <b>full manual review</b> with verified findings, a signed report, and continuous
+      monitoring (re-audited on every commit)? That's the paid service →
+      <a href="https://juan23z.github.io"><b>juan23z.github.io</b></a> · <a href="https://www.fiverr.com/s/P2kNDP0">order on Fiverr</a></p>
+  </section>
+
+  <div class="foot">
+    Free &amp; MIT · built by <a href="https://juan23z.github.io">Nawel</a> ·
+    <a href="https://github.com/juan23z/openclaw-audit">GitHub</a> ·
+    <a href="https://github.com/marketplace/actions/openclaw-audit">Marketplace</a>
+  </div>
+
+</div>
+</body>
+</html>
