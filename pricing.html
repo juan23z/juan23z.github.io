@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart contract security — pricing & services | Juan Nawel</title>
+<meta name="description" content="Honest smart-contract security reviews for small and new protocols. A fast, cheap Pre-Mainnet Express first pass, deeper core reviews, and continuous monitoring. Zero false-positive spam.">
+<style>
+  :root{--bg:#0b0f1a;--card:#111827;--bd:#1f2937;--tx:#e2e8f0;--mut:#94a3b8;--ac:#a5b4fc;--gr:#4ade80;--code:#0f1626}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6}
+  a{color:var(--ac);text-decoration:none}
+  .wrap{max-width:940px;margin:0 auto;padding:0 20px}
+  .hero{text-align:center;padding:52px 0 24px}
+  .hero h1{font-size:36px;line-height:1.15;margin:0 0 14px;font-weight:800;letter-spacing:-.5px}
+  .hero .sub{font-size:18px;color:var(--mut);max-width:640px;margin:0 auto 22px}
+  .badge{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--mut)}
+  .badge.green{color:var(--gr);border-color:#166534}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--ac);color:#0b0f1a;font-weight:700;
+       padding:12px 22px;border-radius:10px;font-size:15px;border:0;cursor:pointer}
+  .cta.ghost{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+  section{padding:30px 0;border-top:1px solid var(--bd)}
+  h2{font-size:23px;font-weight:800;margin:0 0 6px}
+  .lead{color:var(--mut);margin:0 0 20px}
+  .claim{background:linear-gradient(180deg,#0f1a14,#0b0f1a);border:1px solid #166534;border-radius:14px;padding:20px 24px;text-align:center}
+  .claim .big{font-size:26px;font-weight:800;color:var(--gr)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .tier{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;display:flex;flex-direction:column}
+  .tier.star{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac) inset;position:relative}
+  .tier .tag{position:absolute;top:-11px;left:20px;background:var(--ac);color:#0b0f1a;font-size:11px;font-weight:800;
+             padding:3px 10px;border-radius:20px;letter-spacing:.3px}
+  .tier h3{margin:0 0 4px;font-size:18px}
+  .tier .price{font-size:30px;font-weight:800;margin:6px 0 2px}
+  .tier .price small{font-size:14px;color:var(--mut);font-weight:500}
+  .tier .who{color:var(--mut);font-size:13px;margin:0 0 12px}
+  .tier ul{list-style:none;padding:0;margin:0 0 16px;font-size:14px;flex:1}
+  .tier li{padding:4px 0 4px 22px;position:relative;color:#cbd5e1}
+  .tier li:before{content:"✓";position:absolute;left:0;color:var(--gr);font-weight:800}
+  .tier .cta{width:100%;justify-content:center;margin-top:auto}
+  .note{color:var(--mut);font-size:13px}
+  .promise{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 20px}
+  .promise b{color:var(--tx)}
+  footer{padding:34px 0;color:var(--mut);font-size:13px;text-align:center;border-top:1px solid var(--bd)}
+  .foot-links a{margin:0 10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="badge green">● Zero false positives across all of OpenZeppelin</span>
+    <h1>Security reviews that only flag what's real.</h1>
+    <p class="sub">Fast, honest smart-contract reviews for small and new protocols. No 40-item reports padded with noise —
+      I tell you plainly what's a real risk, what's fine, and what to fix before you ship.</p>
+    <a class="cta" href="#tiers">See how it works ↓</a>
+  </div>
+
+  <section style="border-top:0">
+    <div class="claim">
+      <div class="big">608 files · 14 flags · 0 across OpenZeppelin</div>
+      <p class="note" style="margin:8px 0 0">I calibrated my open-source scanner against the 10 most-audited codebases in web3
+        and hand-verified every flag. A tool that cries wolf trains you to ignore it — so silence, on my reports, means something.</p>
+    </div>
+  </section>
+
+  <section id="tiers">
+    <h2>Pick your level</h2>
+    <p class="lead">Start small. Most founders begin with the Express first-pass, then go deeper on the parts that need it.</p>
+    <div class="grid">
+
+      <div class="tier">
+        <h3>Free first-pass</h3>
+        <div class="price">$0</div>
+        <p class="who">Anyone shipping Solidity</p>
+        <ul>
+          <li>My open-source scanner on your repo</li>
+          <li>Runs as a GitHub Action on every PR</li>
+          <li>0 false positives across OpenZeppelin</li>
+          <li>MIT, one command</li>
+        </ul>
+        <a class="cta ghost" href="https://github.com/juan23z/openclaw-audit">Get the scanner</a>
+      </div>
+
+      <div class="tier star">
+        <span class="tag">START HERE</span>
+        <h3>Pre-Mainnet Express</h3>
+        <div class="price">$149</div>
+        <p class="who">Founders days from mainnet</p>
+        <ul>
+          <li>Full engine + <b>hand-verified</b> findings on your core contracts</li>
+          <li>Plain-English report in <b>48 hours</b></li>
+          <li>What's clean · what's real (with severity) · top fixes before launch</li>
+          <li>No false-positive spam — if it's solid, I say so</li>
+        </ul>
+        <a class="cta" href="mailto:naweljuan@gmail.com?subject=Pre-Mainnet%20Express%20review&body=Hi%20Juan%20%E2%80%94%20I%27d%20like%20a%20Pre-Mainnet%20Express%20review.%0A%0ARepo%2Fcontracts%3A%20%0AChain%3A%20%0ARough%20LOC%20of%20core%3A%20%0ATarget%20launch%20date%3A%20">Book the Express →</a>
+      </div>
+
+      <div class="tier">
+        <h3>Core Review</h3>
+        <div class="price">from $700</div>
+        <p class="who">Protocols going live for real</p>
+        <ul>
+          <li>Deep manual review of your money-moving contracts</li>
+          <li>Every finding verified by hand + reproduction notes</li>
+          <li>Actionable report a founder can act on</li>
+          <li>Fixed price after a free scoping call</li>
+        </ul>
+        <a class="cta ghost" href="mailto:naweljuan@gmail.com?subject=Core%20Review%20scoping&body=Hi%20Juan%20%E2%80%94%20I%27d%20like%20to%20scope%20a%20Core%20Review.%0A%0ARepo%3A%20%0AWhat%20it%20does%3A%20%0ALaunch%20timeline%3A%20">Scope a review</a>
+      </div>
+
+      <div class="tier">
+        <h3>Continuous Monitoring</h3>
+        <div class="price">$150<small>/mo</small></div>
+        <p class="who">After you ship</p>
+        <ul>
+          <li>Re-audit on every change (your audit expires when code changes)</li>
+          <li>Scanner in CI, flagged on each PR</li>
+          <li>Monthly plain-English report</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <a class="cta ghost" href="mailto:naweljuan@gmail.com?subject=Continuous%20Monitoring&body=Hi%20Juan%20%E2%80%94%20I%27m%20interested%20in%20continuous%20monitoring%20for%20our%20contracts.">Ask about it</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>My promise</h2>
+    <div class="promise">
+      <p>I only flag what's actually exploitable. I'll tell you plainly when your code is solid — an honest
+        <b>"this is fine, spend your budget elsewhere"</b> is worth paying for. I keep my scanner at
+        <b>zero false positives across the entire OpenZeppelin library</b>, because a report that cries wolf 40 times
+        trains you to ignore the one that matters.</p>
+      <p class="note" style="margin:10px 0 0">Not sure yet? <a href="https://dev.to/juan23z/what-does-a-smart-contract-audit-actually-cost-an-honest-breakdown-for-small-protocols-5gfm">Read my honest breakdown of what an audit actually costs →</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-links">
+      <a href="index.html">Home</a> ·
+      <a href="scanner.html">The scanner</a> ·
+      <a href="sample-audit-report.html">Sample report</a> ·
+      <a href="https://github.com/juan23z/openclaw-audit">GitHub</a> ·
+      <a href="https://dev.to/juan23z">Writing</a>
+    </div>
+    <p style="margin-top:12px">Juan Nawel · Smart contract security · Barcelona · I only flag what's real.</p>
+  </footer>
+
+</div>
+</body>
+</html>
