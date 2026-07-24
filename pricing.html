@@ -40,6 +40,13 @@
   .note{color:var(--mut);font-size:13px}
   .promise{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 20px}
   .promise b{color:var(--tx)}
+  .paybox{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px 20px}
+  .paybox .step{color:#cbd5e1;font-size:14px;margin:6px 0}
+  .addr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--code);border:1px solid var(--bd);
+        border-radius:10px;padding:12px 14px;margin:8px 0}
+  .addr code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;color:var(--gr);word-break:break-all}
+  .copy{background:var(--ac);color:#0b0f1a;border:0;border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer;font-size:13px}
+  .chains{color:var(--mut);font-size:12.5px;margin:4px 0 10px}
   footer{padding:34px 0;color:var(--mut);font-size:13px;text-align:center;border-top:1px solid var(--bd)}
   .foot-links a{margin:0 10px}
 </style>
@@ -49,6 +56,7 @@
 
   <div class="hero">
     <span class="badge green">● Zero false positives across all of OpenZeppelin</span>
+    <span class="badge">💸 Pay in USDC · instant · no fees</span>
     <h1>Security reviews that only flag what's real.</h1>
     <p class="sub">Fast, honest smart-contract reviews for small and new protocols. No 40-item reports padded with noise —
       I tell you plainly what's a real risk, what's fine, and what to fix before you ship.</p>
@@ -92,7 +100,7 @@
           <li>What's clean · what's real (with severity) · top fixes before launch</li>
           <li>No false-positive spam — if it's solid, I say so</li>
         </ul>
-        <a class="cta" href="mailto:naweljuan@gmail.com?subject=Pre-Mainnet%20Express%20review&body=Hi%20Juan%20%E2%80%94%20I%27d%20like%20a%20Pre-Mainnet%20Express%20review.%0A%0ARepo%2Fcontracts%3A%20%0AChain%3A%20%0ARough%20LOC%20of%20core%3A%20%0ATarget%20launch%20date%3A%20">Book the Express →</a>
+        <a class="cta" href="#pay">Get the Express — pay in USDC →</a>
       </div>
 
       <div class="tier">
@@ -121,6 +129,22 @@
         <a class="cta ghost" href="mailto:naweljuan@gmail.com?subject=Continuous%20Monitoring&body=Hi%20Juan%20%E2%80%94%20I%27m%20interested%20in%20continuous%20monitoring%20for%20our%20contracts.">Ask about it</a>
       </div>
 
+    </div>
+  </section>
+
+  <section id="pay">
+    <h2>How to pay — crypto, zero friction</h2>
+    <p class="lead">Web3-native. Pay in <b>USDC or USDT</b> on any EVM chain — instant, no processor fees, no forms.
+      Prefer PayPal or bank transfer? Just ask in your email.</p>
+    <div class="paybox">
+      <div class="step"><b>1.</b> Send the amount (e.g. <b>$149 USDC</b> for the Express) to this address:</div>
+      <div class="addr">
+        <code id="wallet">0x7F6c537aB19D5e01f4E023Ca9ea5C32977c42A16</code>
+        <button class="copy" onclick="(function(b){navigator.clipboard.writeText('0x7F6c537aB19D5e01f4E023Ca9ea5C32977c42A16');b.textContent='Copied ✓';setTimeout(function(){b.textContent='Copy';},1600);})(this)">Copy</button>
+      </div>
+      <div class="chains">✅ Ethereum · Arbitrum · Optimism · Base · Polygon — any EVM chain</div>
+      <div class="step"><b>2.</b> <a href="mailto:naweljuan@gmail.com?subject=Pre-Mainnet%20Express%20%E2%80%94%20paid&body=Hi%20Juan%20%E2%80%94%20I%20sent%20the%20payment%20for%20a%20Pre-Mainnet%20Express%20review.%0A%0ATx%20hash%3A%20%0ARepo%2Fcontracts%3A%20%0AChain%3A%20%0ATarget%20launch%20date%3A%20">Email your repo + the tx hash</a> → I start within 24h.</div>
+      <div class="chains" style="margin-top:6px">Not ready to pay first? <a href="mailto:naweljuan@gmail.com?subject=Question%20about%20a%20security%20review">Email me a question</a> — happy to confirm scope and fit first.</div>
     </div>
   </section>
 
